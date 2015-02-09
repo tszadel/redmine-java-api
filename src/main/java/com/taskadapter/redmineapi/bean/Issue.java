@@ -1,10 +1,11 @@
 package com.taskadapter.redmineapi.bean;
 
+import com.taskadapter.redmineapi.Include;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -13,21 +14,24 @@ import java.util.Set;
 public class Issue implements Identifiable {
 
     /**
-     * @param id database ID.
+     * database ID.
      */
     private final Integer id;
 
-    private String subject;
+    private final PropertyStorage storage;
+
+    public final static Property<String> SUBJECT = new Property<String>(String.class, "subject");
+    public final static Property<Date> START_DATE = new Property<Date>(Date.class, "startDate");
+    public final static Property<Integer> DONE_RATIO = new Property<Integer>(Integer.class, "doneRatio");
+
     private Integer parentId;
     private Float estimatedHours;
     private Float spentHours;
     private User assignee;
     private String priorityText;
     private Integer priorityId;
-    private Integer doneRatio;
     private Project project;
     private User author;
-    private Date startDate;
     private Date dueDate;
     private Tracker tracker;
     private String description;
@@ -59,9 +63,15 @@ public class Issue implements Identifiable {
      */
     Issue(Integer id) {
         this.id = id;
+        this.storage = new PropertyStorage();
     }
 
     public Issue() {
+        this(new PropertyStorage());
+    }
+
+    Issue(PropertyStorage storage) {
+        this.storage = storage;
         this.id = null;
     }
 
@@ -74,11 +84,11 @@ public class Issue implements Identifiable {
     }
 
     public Integer getDoneRatio() {
-        return doneRatio;
+        return storage.get(DONE_RATIO);
     }
 
     public void setDoneRatio(Integer doneRatio) {
-        this.doneRatio = doneRatio;
+        storage.set(DONE_RATIO, doneRatio);
     }
 
     public String getPriorityText() {
@@ -139,27 +149,19 @@ public class Issue implements Identifiable {
     }
 
     public String getSubject() {
-        return subject;
+        return storage.get(SUBJECT);
     }
 
     public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
+        storage.set(SUBJECT, subject);
     }
 
     public Date getStartDate() {
-        return startDate;
+        return storage.get(START_DATE);
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        storage.set(START_DATE, startDate);
     }
 
     public Date getDueDate() {
@@ -168,6 +170,14 @@ public class Issue implements Identifiable {
 
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public Tracker getTracker() {
@@ -325,11 +335,11 @@ public class Issue implements Identifiable {
 
     @Override
     public String toString() {
-        return "Issue [id=" + id + ", subject=" + subject + "]";
+        return "Issue [id=" + id + ", subject=" + getSubject() + "]";
     }
 
     /**
-     * Relations are only loaded if you include INCLUDE.relations when loading the Issue.
+     * Relations are only loaded if you include Include.relations when loading the Issue.
      *
      * @return relations or EMPTY collection if no relations, never returns NULL
      *
@@ -380,5 +390,15 @@ public class Issue implements Identifiable {
 
     public void setCategory(IssueCategory category) {
         this.category = category;
+    }
+
+    @Override
+    public Issue clone() {
+        PropertyStorage clonedStorage = storage.deepClone();
+        return new Issue(clonedStorage);
+    }
+
+    public PropertyStorage getStorage() {
+        return storage;
     }
 }

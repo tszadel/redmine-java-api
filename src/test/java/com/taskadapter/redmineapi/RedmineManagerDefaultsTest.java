@@ -91,6 +91,7 @@ public class RedmineManagerDefaultsTest {
 	@Test
 	public void testIssueDefaults() throws RedmineException {
 		final Issue template = IssueFactory.createWithSubject("This is a subject");
+		template.setStartDate(null);
 		final Issue result = issueManager.createIssue(projectKey, template);
 		
 		try {
@@ -122,6 +123,29 @@ public class RedmineManagerDefaultsTest {
 			Assert.assertNotNull(result.getAttachments());
 		} finally {
             issueManager.deleteIssue(result.getId());
+		}
+	}
+
+	@Test
+	public void issueWithStartDateNotSetGetsDefaultValue() throws RedmineException {
+		final Issue template = IssueFactory.createWithSubject("Issue with no start date set in code");
+		final Issue result = issueManager.createIssue(projectKey, template);
+		try {
+			Assert.assertNotNull(result.getStartDate());
+		} finally {
+			issueManager.deleteIssue(result.getId());
+		}
+	}
+
+	@Test
+	public void issueWithStartDateSetToNullDoesNotGetDefaultValueForStartDate() throws RedmineException {
+		final Issue template = IssueFactory.createWithSubject("Issue with NULL start date");
+		template.setStartDate(null);
+		final Issue result = issueManager.createIssue(projectKey, template);
+		try {
+			Assert.assertNull(result.getStartDate());
+		} finally {
+			issueManager.deleteIssue(result.getId());
 		}
 	}
 
