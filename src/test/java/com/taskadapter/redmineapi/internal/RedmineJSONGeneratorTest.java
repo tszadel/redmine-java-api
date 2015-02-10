@@ -2,6 +2,8 @@ package com.taskadapter.redmineapi.internal;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import com.taskadapter.redmineapi.bean.Group;
+import com.taskadapter.redmineapi.bean.GroupFactory;
 import com.taskadapter.redmineapi.bean.User;
 import com.taskadapter.redmineapi.bean.UserFactory;
 import org.junit.Test;
@@ -44,4 +46,17 @@ public class RedmineJSONGeneratorTest {
 		assertThat(generatedJSON).contains("\"status\":null");
 		assertThat(generatedJSON).doesNotContain("\"id\"");
 	}
+
+	@Test
+	public void onlyExplicitlySetFieldsAreAddedToGroupJSon() {
+		Group groupWithoutName = GroupFactory.create(4);
+		final String generatedJSON = RedmineJSONBuilder.toSimpleJSON("some_project_key", groupWithoutName, RedmineJSONBuilder.GROUP_WRITER);
+		assertThat(generatedJSON).doesNotContain("\"name\"");
+
+		Group groupWithName = GroupFactory.create(4);
+		groupWithName.setName("some name");
+		final String generatedJSONWithName = RedmineJSONBuilder.toSimpleJSON("some_project_key", groupWithName, RedmineJSONBuilder.GROUP_WRITER);
+		assertThat(generatedJSONWithName).contains("\"name\":\"some name\"");
+	}
+
 }

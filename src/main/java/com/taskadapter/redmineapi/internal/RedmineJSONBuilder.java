@@ -268,7 +268,7 @@ public class RedmineJSONBuilder {
 		addIfSet(writer, "password", storage, User.PASSWORD);
 		addIfSet(writer, "firstname", storage, User.FIRST_NAME);
 		addIfSet(writer, "lastname", storage, User.LAST_NAME);
-		// I don't think this "name" is required... check this.
+		// TODO I don't think this "name" is required... check this.
 //		addIfSet(writer, "name", storage, User.FULL_NAME);
 		addIfSet(writer, "mail", storage, User.MAIL);
 		addIfSet(writer, "auth_source_id", storage, User.AUTH_SOURCE_ID);
@@ -280,8 +280,9 @@ public class RedmineJSONBuilder {
 	}
 
     public static void writeGroup(Group group, final JSONWriter writer) throws JSONException {
-		JsonOutput.addIfNotNull(writer, "id", group.getId());
-		JsonOutput.addIfNotNull(writer, "name", group.getName());
+		PropertyStorage storage = group.getStorage();
+		addIfSet(writer, "id", storage, Group.ID);
+		addIfSet(writer, "name", storage, Group.NAME);
 	}
 
 	public static void writeIssue(Issue issue, final JSONWriter writer) throws JSONException {

@@ -2,9 +2,11 @@ package com.taskadapter.redmineapi.bean;
 
 
 public class Group implements Identifiable {
-	
-    private final Integer id;
-    private String name;
+
+    private final PropertyStorage storage;
+
+    public final static Property<Integer> ID = new Property<Integer>(Integer.class, "id");
+    public final static Property<String> NAME = new Property<String>(String.class, "name");
 
     /**
      * Use GroupFactory to create instances of this class.
@@ -12,26 +14,31 @@ public class Group implements Identifiable {
      * @param id database ID.
      */
     Group(Integer id) {
-        this.id = id;
+        storage = new PropertyStorage();
+        storage.set(ID, id);
+    }
+
+    public Group(PropertyStorage storage) {
+        this.storage = storage;
     }
 
     public Integer getId() {
-        return id;
+        return storage.get(ID);
     }
 
     public String getName() {
-        return name;
+        return storage.get(NAME);
     }
 
     public void setName(String name) {
-        this.name = name;
+        storage.set(NAME, name);
     }
 
     @Override
     public String toString() {
         return "Group{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "id=" + getId() +
+                ", name='" + getName() + '\'' +
                 '}';
     }
 
@@ -42,13 +49,17 @@ public class Group implements Identifiable {
 
         Group group = (Group) o;
 
-        if (id != null ? !id.equals(group.id) : group.id != null) return false;
+        if (getId() != null ? !getId().equals(group.getId()) : group.getId() != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        return getId() != null ? getId().hashCode() : 0;
+    }
+
+    public PropertyStorage getStorage() {
+        return storage;
     }
 }

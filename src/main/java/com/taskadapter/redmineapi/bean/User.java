@@ -29,10 +29,10 @@ public class User implements Identifiable {
     public final static Property<Integer> AUTH_SOURCE_ID = new Property<Integer>(Integer.class, "authSourceId");
     public final static Property<Integer> STATUS = new Property<Integer>(Integer.class, "status");
 
-    // TODO add tests
     private final Set<CustomField> customFields = new HashSet<CustomField>();
 	private final Set<Membership> memberships = new HashSet<Membership>();
-	private final Set<Group> groups = new HashSet<Group>();
+
+    public final static Property<Collection> GROUPS = new SetProperty("groups");
 
     /**
      * Use UserFactory to create instances of this class.
@@ -227,11 +227,14 @@ public class User implements Identifiable {
 	}
 
 	public Collection<Group> getGroups() {
-	   return Collections.unmodifiableCollection(groups);
-	   }
+        return Collections.unmodifiableCollection(storage.get(GROUPS));
+    }
 
 	public void addGroups(Collection<Group> groups) {
-	   this.groups.addAll(groups);
+        if (!storage.isPropertySet(GROUPS)) {
+            storage.set(GROUPS, new HashSet<Group>());
+        }
+        storage.get(GROUPS).addAll(groups);
 	}
 
     /**
