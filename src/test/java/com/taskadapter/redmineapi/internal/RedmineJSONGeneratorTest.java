@@ -1,7 +1,9 @@
 package com.taskadapter.redmineapi.internal;
 
-import static org.junit.Assert.assertTrue;
+import static org.fest.assertions.Assertions.assertThat;
 
+import com.taskadapter.redmineapi.bean.User;
+import com.taskadapter.redmineapi.bean.UserFactory;
 import org.junit.Test;
 import com.taskadapter.redmineapi.bean.Issue;
 
@@ -17,16 +19,29 @@ public class RedmineJSONGeneratorTest {
 		issue.setPriorityId(1);
 		final String generatedJSON = RedmineJSONBuilder.toSimpleJSON(
                 "some_project_key", issue, RedmineJSONBuilder.ISSUE_WRITER);
-		assertTrue(generatedJSON.contains("\"priority_id\":1"));
+		assertThat(generatedJSON).contains("\"priority_id\":1");
 	}
 
 	@Test
-	public void onlySetFieldsAreAddedToJSonEvenIfTheyAreNull() {
+	public void onlyExplicitlySetFieldsAreAddedToIssueJSon() {
 		Issue issue = new Issue();
 		issue.setSubject("subj1");
 		issue.setDoneRatio(null);
 		final String generatedJSON = RedmineJSONBuilder.toSimpleJSON("some_project_key", issue, RedmineJSONBuilder.ISSUE_WRITER);
-		assertTrue(generatedJSON.contains("\"subject\":\"subj1\","));
-		assertTrue(generatedJSON.contains("\"done_ratio\":null"));
+		assertThat(generatedJSON).contains("\"subject\":\"subj1\",");
+		assertThat(generatedJSON).contains("\"done_ratio\":null");
+	}
+
+	@Test
+	public void onlyExplicitlySetFieldsAreAddedToUserJSon() {
+		User user = UserFactory.create();
+		user.setLogin("login1");
+		user.setMail(null);
+		user.setStatus(null);
+		final String generatedJSON = RedmineJSONBuilder.toSimpleJSON("some_project_key", user, RedmineJSONBuilder.USER_WRITER);
+		assertThat(generatedJSON).contains("\"login\":\"login1\",");
+		assertThat(generatedJSON).contains("\"mail\":null");
+		assertThat(generatedJSON).contains("\"status\":null");
+		assertThat(generatedJSON).doesNotContain("\"id\"");
 	}
 }

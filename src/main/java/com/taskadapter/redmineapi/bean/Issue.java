@@ -27,17 +27,17 @@ public class Issue implements Identifiable {
     public final static Property<Date> UPDATED_ON = new Property<Date>(Date.class, "updatedOn");
     public final static Property<Integer> DONE_RATIO = new Property<Integer>(Integer.class, "doneRatio");
     public final static Property<Integer> PARENT_ID = new Property<Integer>(Integer.class, "parentId");
+    public final static Property<Integer> PRIORITY_ID = new Property<Integer>(Integer.class, "priorityId");
     public final static Property<Float> ESTIMATED_HOURS = new Property<Float>(Float.class, "estimatedHours");
     public final static Property<Float> SPENT_HOURS = new Property<Float>(Float.class, "spentHours");
+    public final static Property<User> ASSIGNEE = new UserProperty("assignee");
 
     /**
      * Some comment describing an issue update.
      */
     public final static Property<String> NOTES = new Property<String>(String.class, "notes");
 
-    private User assignee;
     private String priorityText;
-    private Integer priorityId;
     private Project project;
     private User author;
     private Tracker tracker;
@@ -104,11 +104,11 @@ public class Issue implements Identifiable {
     }
 
     public User getAssignee() {
-        return assignee;
+        return storage.get(ASSIGNEE);
     }
 
     public void setAssignee(User assignee) {
-        this.assignee = assignee;
+        storage.set(ASSIGNEE, assignee);
     }
 
     public Float getEstimatedHours() {
@@ -357,11 +357,11 @@ public class Issue implements Identifiable {
     }
 
     public Integer getPriorityId() {
-        return priorityId;
+        return storage.get(PRIORITY_ID);
     }
 
     public void setPriorityId(Integer priorityId) {
-        this.priorityId = priorityId;
+        storage.set(PRIORITY_ID, priorityId);
     }
 
     public Version getTargetVersion() {
@@ -395,8 +395,7 @@ public class Issue implements Identifiable {
         this.category = category;
     }
 
-    @Override
-    public Issue clone() {
+    public Issue cloneDeep() {
         PropertyStorage clonedStorage = storage.deepClone();
         return new Issue(clonedStorage);
     }

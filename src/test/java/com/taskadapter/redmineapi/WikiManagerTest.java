@@ -52,7 +52,7 @@ public class WikiManagerTest {
         assertThat(attachment.getFileName()).isEqualTo("happy_penguin.jpg");
         assertThat(attachment.getId()).isEqualTo(8);
         assertThat(attachment.getFileSize()).isEqualTo(72158);
-        assertThat(attachment.getAuthor().getFullName()).isEqualTo("Redmine Admin");
+        assertThat(attachment.getAuthor().getLogin()).isEqualTo("Redmine Admin");
         assertThat(attachment.getContentURL()).isEqualTo("http://76.126.10.142/redmine/attachments/download/8/happy_penguin.jpg");
     }
 }
