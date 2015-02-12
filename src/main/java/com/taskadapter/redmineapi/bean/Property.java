@@ -21,4 +21,12 @@ public class Property<T> {
     T cloneDeep(Object t) {
         return (T) t;
     }
+
+    @Override
+    public String toString() {
+        return "Property{" +
+                "type=" + type +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
