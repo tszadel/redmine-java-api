@@ -1,5 +1,7 @@
 package com.taskadapter.redmineapi.bean;
 
+import com.taskadapter.redmineapi.internal.Optional;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -20,16 +22,28 @@ public class User implements Identifiable {
      */
     private final Integer id;
 
-    private String login;
+    private final Optional<String> login = new Optional<String>();
     private String password;
     private String firstName;
     private String lastName;
-    private String mail;
+    /**
+     * "mail" field is intentionally made public to demonstrate two options we have for API:
+     * <ul>
+     *   <li>declare all Optional fields public. No-no in OOD "best practices" because this exposes internal details to end users.</li>
+     *   <li>OR add isXXXPresent() and clearXXX() methods for every field and get pretty verbose API.</li>
+     * </ul>
+     * Both these options can maintain backward compatibility (source, binary and even functional). Old clients
+     * can still use getXXX() methods which will behave as before. And new clients can either use public Optional fields
+     * (option 1) or check isXXXPresent() methods.
+     * <p>Alexey: I vote for option 2 with many new methods. this way we can also change implementation of Optional in
+     * the future without affecting clients.
+     */
+    public final Optional<String> mail = new Optional<String>();
     private Date createdOn;
     private Date lastLoginOn;
     private String apiKey;
     private Integer authSourceId;
-    private Integer status;
+    private final Optional<Integer> status = new Optional<Integer>();
     // TODO add tests
     private final Set<CustomField> customFields = new HashSet<CustomField>();
 	private final Set<Membership> memberships = new HashSet<Membership>();
@@ -57,11 +71,19 @@ public class User implements Identifiable {
     }
 
     public String getLogin() {
-        return login;
+        return login.orNull();
     }
 
     public void setLogin(String login) {
-        this.login = login;
+        this.login.set(login);
+    }
+
+    public boolean isLoginPresent() {
+        return login.isPresent();
+    }
+
+    public void clearLogin() {
+        login.remove();
     }
 
     public String getFirstName() {
@@ -84,11 +106,11 @@ public class User implements Identifiable {
      * This field is empty when using issues.get(i).getAssignee().getMail()
      */
     public String getMail() {
-        return mail;
+        return mail.orNull();
     }
 
     public void setMail(String mail) {
-        this.mail = mail;
+        this.mail.set(mail);
     }
 
     public Date getCreatedOn() {
@@ -249,7 +271,7 @@ public class User implements Identifiable {
      * @return User status
      */
     public Integer getStatus() {
-        return status;
+        return status.orNull();
     }
 
     /**
@@ -258,6 +280,10 @@ public class User implements Identifiable {
      * @param status must be one of {@link #STATUS_ACTIVE} or {@link #STATUS_LOCKED}
      */
     public void setStatus(Integer status) {
-        this.status = status;
+        this.status.set(status);
+    }
+
+    public boolean isStatusPresent() {
+        return status.isPresent();
     }
 }

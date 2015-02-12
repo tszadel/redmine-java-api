@@ -261,14 +261,24 @@ public class RedmineJSONBuilder {
 	public static void writeUser(User user, final JSONWriter writer)
 			throws JSONException {
 		JsonOutput.addIfNotNull(writer, "id", user.getId());
-		JsonOutput.addIfNotNull(writer, "login", user.getLogin());
+
+		if (user.isLoginPresent()) {
+			JsonOutput.add(writer, "login", user.getLogin());
+		}
 		JsonOutput.addIfNotNull(writer, "password", user.getPassword());
 		JsonOutput.addIfNotNull(writer, "firstname", user.getFirstName());
 		JsonOutput.addIfNotNull(writer, "lastname", user.getLastName());
 		JsonOutput.addIfNotNull(writer, "name", user.getFullName());
-		JsonOutput.addIfNotNull(writer, "mail", user.getMail());
+		/* This is inconsistent from "user - isLoginPresent" check above. This is done on purpose
+		 * to illustrate different APIs we can use. we need to pick one. See options described in User class.
+		 */
+		if (user.mail.isPresent()) {
+			JsonOutput.add(writer, "mail", user.mail.get());
+		}
 		JsonOutput.addIfNotNull(writer, "auth_source_id", user.getAuthSourceId());
-		JsonOutput.addIfNotNull(writer, "status", user.getStatus());
+		if (user.isStatusPresent()) {
+			JsonOutput.add(writer, "status", user.getStatus());
+		}
 		addIfNotNullFull(writer, "created_on", user.getCreatedOn());
 		addIfNotNullFull(writer, "last_login_on", user.getLastLoginOn());
 		writeCustomFields(writer, user.getCustomFields());

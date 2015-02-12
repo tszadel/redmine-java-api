@@ -29,6 +29,11 @@ public class JsonOutput {
 		writer.value(value);
 	}
 
+	public static void add(JSONWriter writer, String field, Object value) throws JSONException {
+		writer.key(field);
+		writer.value(value);
+	}
+
 	/**
 	 * Adds a value to a writer if value is not <code>null</code>.
 	 * 

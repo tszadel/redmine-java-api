@@ -1,7 +1,10 @@
 package com.taskadapter.redmineapi.internal;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import com.taskadapter.redmineapi.bean.User;
+import com.taskadapter.redmineapi.bean.UserFactory;
 import org.junit.Test;
 import com.taskadapter.redmineapi.bean.Issue;
 
@@ -20,4 +23,16 @@ public class RedmineJSONGeneratorTest {
 		assertTrue(generatedJSON.contains("\"priority_id\":1,"));
 	}
 
+	@Test
+	public void onlyExplicitlySetFieldsAreAddedToUserJSon() {
+		User user = UserFactory.create();
+		user.setLogin("login1");
+		user.setMail(null);
+		user.setStatus(null);
+		final String generatedJSON = RedmineJSONBuilder.toSimpleJSON("some_project_key", user, RedmineJSONBuilder.USER_WRITER);
+		assertThat(generatedJSON).contains("\"login\":\"login1\",");
+		assertThat(generatedJSON).contains("\"mail\":null");
+		assertThat(generatedJSON).contains("\"status\":null");
+		assertThat(generatedJSON).doesNotContain("\"id\"");
+	}
 }
