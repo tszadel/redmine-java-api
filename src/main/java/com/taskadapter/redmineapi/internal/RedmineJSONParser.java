@@ -10,8 +10,8 @@ import java.util.Set;
 import com.taskadapter.redmineapi.bean.AttachmentFactory;
 import com.taskadapter.redmineapi.bean.CustomFieldFactory;
 import com.taskadapter.redmineapi.bean.GroupFactory;
+import com.taskadapter.redmineapi.bean.IssueBuilder;
 import com.taskadapter.redmineapi.bean.IssueCategoryFactory;
-import com.taskadapter.redmineapi.bean.IssueFactory;
 import com.taskadapter.redmineapi.bean.IssuePriorityFactory;
 import com.taskadapter.redmineapi.bean.IssueRelationFactory;
 import com.taskadapter.redmineapi.bean.IssueStatusFactory;
@@ -396,8 +396,14 @@ public class RedmineJSONParser {
 
 	@SuppressWarnings("deprecation")
 	public static Issue parseIssue(JSONObject content) throws JSONException {
-		final Issue result = IssueFactory.create(JsonInput.getIntOrNull(content, "id"));
-		result.setSubject(JsonInput.getStringOrNull(content, "subject"));
+		final Integer id = JsonInput.getIntOrNull(content, "id");
+		final Issue result = new IssueBuilder()
+				.withId(id)
+				.withSubject(JsonInput.getStringOrNull(content, "subject"))
+				.withDescription(JsonInput.getStringOrEmpty(content, "description"))
+				.withJournals(JsonInput.getListOrEmpty(content, "journals", JOURNAL_PARSER))
+				.build();
+
 		final JSONObject parentIssueObject = JsonInput.getObjectOrNull(content,
 				"parent");
 		if (parentIssueObject != null)
@@ -425,8 +431,6 @@ public class RedmineJSONParser {
 		result.setDueDate(getDateOrNull(content, "due_date"));
 		result.setTracker(JsonInput.getObjectOrNull(content, "tracker",
 				TRACKER_PARSER));
-		result.setDescription(JsonInput
-				.getStringOrEmpty(content, "description"));
 		result.setCreatedOn(getDateOrNull(content, "created_on"));
 		result.setUpdatedOn(getDateOrNull(content, "updated_on"));
 		final JSONObject statusObject = JsonInput.getObjectOrNull(content,
@@ -440,8 +444,6 @@ public class RedmineJSONParser {
 		result.addCustomFields(JsonInput.getListOrEmpty(content,
 				"custom_fields", CUSTOM_FIELD_PARSER));
 		result.setNotes(JsonInput.getStringOrNull(content, "notes"));
-		result.addJournals(JsonInput.getListOrEmpty(content, "journals",
-				JOURNAL_PARSER));
 		result.addAttachments(
 				JsonInput.getListOrEmpty(content, "attachments",
 						ATTACHMENT_PARSER));

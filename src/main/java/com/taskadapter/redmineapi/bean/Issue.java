@@ -279,19 +279,6 @@ public class Issue implements Identifiable {
     }
 
     /**
-     * Issue journals are created automatically when you update existing issues.
-     * journal entries are essentially log records for changes you make.
-     * you cannot just add log records without making actual changes.
-     * this API method is misleading and it should only be used internally by Redmine Json parser
-     * when parsing response from server. we should hide it from public.
-     *
-     * TODO hide this method. https://github.com/taskadapter/redmine-java-api/issues/199
-     */
-    public void addJournals(Collection<Journal> journals) {
-        this.journals.addAll(journals);
-    }
-
-    /**
      * Don't forget to use Include.changesets flag when loading issue from Redmine server:
      * <pre>
      *     Issue issue = issueManager.getIssueById(3205, Include.changesets);
@@ -301,6 +288,16 @@ public class Issue implements Identifiable {
      */
     public Collection<Changeset> getChangesets() {
         return Collections.unmodifiableCollection(changesets);
+    }
+
+    /**
+     * Issue journals are created automatically when you update existing issues.
+     * journal entries are essentially log records for changes you make.
+     * you cannot just add log records without making actual changes.
+     * this method is only available internally to parse Json objects returned by server.
+     */
+    void addJournals(Collection<Journal> journals) {
+        this.journals.addAll(journals);
     }
 
     public void addChangesets(Collection<Changeset> changesets) {
