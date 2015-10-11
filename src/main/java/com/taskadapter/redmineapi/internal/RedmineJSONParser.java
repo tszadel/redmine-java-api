@@ -398,10 +398,10 @@ public class RedmineJSONParser {
 	public static Issue parseIssue(JSONObject content) throws JSONException {
 		final Integer id = JsonInput.getIntOrNull(content, "id");
 		final Issue result = new IssueBuilder()
-				.withId(id)
-				.withSubject(JsonInput.getStringOrNull(content, "subject"))
-				.withDescription(JsonInput.getStringOrEmpty(content, "description"))
-				.withJournals(JsonInput.getListOrEmpty(content, "journals", JOURNAL_PARSER))
+				.setId(id)
+				.setSubject(JsonInput.getStringOrNull(content, "subject"))
+				.setDescription(JsonInput.getStringOrEmpty(content, "description"))
+				.setJournals(JsonInput.getListOrEmpty(content, "journals", JOURNAL_PARSER))
 				.build();
 
 		final JSONObject parentIssueObject = JsonInput.getObjectOrNull(content,

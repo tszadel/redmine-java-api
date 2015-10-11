@@ -10,22 +10,22 @@ public final class IssueBuilder {
     private String description = "";
     private Integer id;
 
-    public IssueBuilder withId(Integer id) {
+    public IssueBuilder setId(Integer id) {
         this.id = id;
         return this;
     }
 
-    public IssueBuilder withSubject(String subject) {
+    public IssueBuilder setSubject(String subject) {
         this.subject = subject;
         return this;
     }
 
-    public IssueBuilder withDescription(String description) {
+    public IssueBuilder setDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public IssueBuilder withJournals(Collection<Journal> journals) {
+    public IssueBuilder setJournals(Collection<Journal> journals) {
         this.journals.addAll(journals);
         return this;
     }
