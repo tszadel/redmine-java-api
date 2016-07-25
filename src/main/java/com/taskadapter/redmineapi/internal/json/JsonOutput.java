@@ -7,6 +7,8 @@ import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONWriter;
 
+import com.taskadapter.redmineapi.bean.EmptyValue;
+
 public class JsonOutput {
 
 	/**
@@ -46,7 +48,10 @@ public class JsonOutput {
 		if (value == null)
 			return;
 		writer.key(field);
-		writer.value(value);
+		if(value == EmptyValue.EMPTY_ID) 
+		    writer.value("");
+		else
+		    writer.value(value);
 	}
 
 	/**
@@ -66,7 +71,11 @@ public class JsonOutput {
 		if (value == null)
 			return;
 		writer.key(field);
-		writer.value(value);
+		
+		if(value == EmptyValue.EMPTY_FLOAT) 
+		    writer.value("");
+		else
+		    writer.value(value);
 	}
 
 	/**
@@ -88,7 +97,11 @@ public class JsonOutput {
 		if (value == null)
 			return;
 		writer.key(field);
-		writer.value(format.format(value));
+		if(value == EmptyValue.EMPTY_DATE) 
+		    writer.value("");
+		else
+		    writer.value(format.format(value));
+		
 	}
 
         /**
