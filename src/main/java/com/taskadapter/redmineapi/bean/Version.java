@@ -29,8 +29,6 @@ public class Version implements Identifiable {
     public static final String SHARING_TREE = "tree";
     public static final String SHARING_SYSTEM = "system";
 
-    public static final Version EMPTY_VERSION = new Version(null);
-
     private final Integer id;
     private Project project;
     private String name;
@@ -45,7 +43,6 @@ public class Version implements Identifiable {
 
     /**
      * Use VersionFactory to create an instance of this class.
-     * 
      * @see com.taskadapter.redmineapi.bean.VersionFactory
      */
     Version(Integer id) {
@@ -57,18 +54,12 @@ public class Version implements Identifiable {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Version version = (Version) o;
 
-        if (id != null ? !id.equals(version.id) : version.id != null) {
-            return false;
-        }
+        if (id != null ? !id.equals(version.id) : version.id != null) return false;
 
         return true;
     }
